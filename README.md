@@ -39,4 +39,4 @@ node server
 
 L'application est désormais accesssible à l'url **http://localhost:3000/**.
 
-# socket.io-chat
+# Rajout de fonctionalité
