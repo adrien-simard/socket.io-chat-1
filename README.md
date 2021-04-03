@@ -60,5 +60,6 @@ mongod --replSet rs0 --port 3000 --dbpath ./data/arb
 il suffit d’exécuter la commande rs.addArb(‘localhost :3000’) dans le client mongo. Dès cet instant, l’arbitre élit le primary et les deux secondary.
 
 ## Quelques Requêtes
+* Quelques requêtes basiques comme récuperer les messages, les messages de chaque utilisateurs, compter les messages de chaques utilisateurs...Elles sont visible dans le code  :white_check_mark:
 * Pouvoir afficher une conversation précédente entre deux utilisateurs
 * Sortir des requêtes pertinentes : utilisateur le plus sollicité, celui qui communique le plus, etc.
