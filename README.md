@@ -40,8 +40,31 @@ node server
 L'application est désormais accesssible à l'url **http://localhost:3000/**.
 
 # Rajout de fonctionalité
+## Utilisateurs et stockage des messages
 * Connaître quels sont les utilisateurs connectés et les afficher (en utilisant Redis) done
 * Stocker l'ensemble des messages dans MongoDB done
+
+## Replicaset
 * Utiliser le ReplicaSet pour permettre une meilleure tolérance aux pannes
+Nous allons créer 1 serveur primiry et deux serveurs secondary qui vont permettrent la replication des données.
+Pour ce faire on créer 3 dossiers R0S1, R0S2 , R0S3 dans le repertoire data.
+Ensuite on effectue les commandes suivante pour lancer les replicaset sur différents port.
+
+mongod --replSet rs0 --port 27018 --dbpath ./data/R0S1
+
+mongod --replSet rs0 --port 27019 --dbpath ./data/R0S2
+
+mongod --replSet rs0 --port 27020 --dbpath ./data/R0S3
+on se connect ensuite au port 27018 qui est le serveur principale pour connecter les replicasets
+
+Ensuite on initialise le replicaset : rs.initiate()
+On ajoute les replicasets: rs.add(‘localhost :27020’)
+
+Pour finir on créer un serveur arbitre qui va élire le serveur primary. On evite les temps de latences de l'élection
+
+mongod --replSet rs0 --port 3000 --dbpath ./data/arb
+il suffit d’exécuter la commande rs.addArb(‘localhost :3000’) dans le client mongo. Dès cet instant, l’arbitre élit le primary et les deux secondary.
+
+## Quelques Requêtes
 * Pouvoir afficher une conversation précédente entre deux utilisateurs
 * Sortir des requêtes pertinentes : utilisateur le plus sollicité, celui qui communique le plus, etc.
