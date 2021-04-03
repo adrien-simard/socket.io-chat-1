@@ -28,6 +28,8 @@ client.on("ready", function(error) {
  */
  app.use('/', express.static(__dirname + '/public'));
 
+ 
+
  /**
   * Liste des utilisateurs connectés
   */
@@ -247,3 +249,19 @@ function getAllMessages(){
   })
 }
 // getAllMessages();
+
+function getAllUserMessageNumber(username) {
+	// Pour avoir le nombre de message total (toutes rooms confondues) d'un utilisateur
+	Message.find({utilisateur:username}).countDocuments().exec(function(err,res) {
+		console.log(res);
+	})
+}
+//getAllUserMessageNumber("Adrien");
+
+
+function getBonjour(){
+  Message.find({content:"bonjour"}).exec(function (err,res){
+    console.log(res);
+  })
+}
+// getBonjour();
