@@ -1,12 +1,16 @@
 var express = require('express');
+// import des models et de mongo
 var User = require("./models/user");
 var Message = require("./models/messages");
 var mongoose = require('mongoose');
+
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var i;
 var usersConnected;
+
+// import de redis client
 const redis = require("redis");
 const client = redis.createClient();
 var alert = require('alert');
@@ -28,6 +32,8 @@ client.on("ready", function(error) {
   * Liste des utilisateurs connectés
   */
  var users = [];
+
+ client.del("users");
  
  /**
   * Historique des messages
@@ -51,11 +57,12 @@ client.on("ready", function(error) {
     */
    for (i = 0; i < users.length; i++) {
      socket.emit('user-login', users[i]);
-     var user = new User({
+     // création de l'utilisateur et ajout a sa connection
+     var utilisateur = new User({
       username: users[i].username,
     });
     console.log(users[i].username);
-    user.save(function (err) {
+    utilisateur.save(function (err) {
      if (err) throw err;
  });
    }
@@ -66,13 +73,7 @@ client.on("ready", function(error) {
    for (i = 0; i < messages.length; i++) {
      if (messages[i].type === 'chat-message') {
        socket.emit('chat-message', messages[i]);
-       var message = new Message({
-         content: messages[i].text,
-       });
-       console.log(messages[i].text);
-       message.save(function (err) {
-        if (err) throw err;
-    });
+       
      } else {
        socket.emit('service-message', messages[i]);
        
@@ -84,10 +85,6 @@ client.on("ready", function(error) {
     */
    socket.on('disconnect', function () {
 
-    client.lrem("users", 1 , loggedUser.username, function(err, reply) {
-      console.log(loggedUser.username + " s'est deconnecté")
-    });
-
      if (loggedUser !== undefined) {
        // Broadcast d'un 'service-message'
        var serviceMessage = {
@@ -95,6 +92,16 @@ client.on("ready", function(error) {
          type: 'logout'
        };
        socket.broadcast.emit('service-message', serviceMessage);
+
+       // supression liste des connectés dans redis
+       client.lrem(['users',0, loggedUserAsString], function(err, reply) { //REDIS - On enlève l'user de la db, on utilise la version stringifiée du json
+	      	if (err) throw err;
+	    	console.log(reply); // On s'assure que la suppression s'est bien faite
+		  });
+		  client.lrange("users",0,-1, function(err,reply) { // on remet à jour la variable users
+		  	if (err) throw err;
+			users=reply;
+		  });
        // Suppression de la liste des connectés
        var userIndex = users.indexOf(loggedUser);
        if (userIndex !== -1) {
@@ -117,11 +124,6 @@ client.on("ready", function(error) {
     */
    socket.on('user-login', function (user, callback) {
 
-    client.sadd('allUsers', user.username, function(err, reply) {
-      if (reply==1){
-        console.log("Hello to this new users : "+user.username)
-      }
-    });
      // Vérification que l'utilisateur n'existe pas
      var userIndex = -1;
      for (i = 0; i < users.length; i++) {
@@ -129,21 +131,32 @@ client.on("ready", function(error) {
          userIndex = i;
        }
      }
+
      if (user !== undefined && userIndex === -1) { // S'il est bien nouveau
        // Sauvegarde de l'utilisateur et ajout à la liste des connectés
-
-       //add user connected on redis
-      client.lpush('users', user.username, function(err, reply) {
-        console.log(user.username + " s'est connecté")
-        console.log("Il y a " + reply + " personnes connecté(s)")
-        });
        loggedUser = user;
        users.push(loggedUser);
+       loggedUserAsString = JSON.stringify(loggedUser);// Stringificaiton du document pour l'ajouter dans redis et le recupérer en tant que que document avec json.parse
+       
+       client.rpush(['users', loggedUserAsString], function(err, reply) {   
+         // REDIS - Ajout de l'user à la db
+        if (err) throw err;
+        console.log(reply); // On s'assure que l'ajout s'est bien fait
+        
+       });
+		  	client.lrange("users",0,-1, function(err,reply) { // on remet à jour la variable users avec les données de redis
+		  		if (err) throw err;
+				users=reply;
+        //affichage de la liste des users
+        console.log(users)
+		  	});
+
        // Envoi et sauvegarde des messages de service
        var userServiceMessage = {
          text: 'You logged in as "' + loggedUser.username + '"',
          type: 'login'
        };
+
        var broadcastedServiceMessage = {
          text: 'User "' + loggedUser.username + '" logged in',
          type: 'login'
@@ -169,8 +182,18 @@ client.on("ready", function(error) {
      message.type = 'chat-message';
      io.emit('chat-message', message);
      // Sauvegarde du message
-     
-     messages.push(message);
+      messages.push(message);
+
+      // sauvegarde sur mongo du chat-message 
+      var mess = new Message({
+        content: message.text,
+        utilisateur: loggedUser.username
+      });
+      console.log(message.text);
+      mess.save(function (err) {
+       if (err) throw err;
+   });
+
      if (messages.length > 150) {
        messages.splice(0, 1);
      }
