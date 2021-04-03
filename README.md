@@ -35,8 +35,8 @@ L'application est désormais accesssible à l'url **http://localhost:8001/**.
 
 # Rajout de fonctionalité
 ## Utilisateurs et stockage des messages
-* Connaître quels sont les utilisateurs connectés et les afficher (en utilisant Redis) done
-* Stocker l'ensemble des messages dans MongoDB done
+* Connaître quels sont les utilisateurs connectés et les afficher (en utilisant Redis) [ ] Jupiter
+* Stocker l'ensemble des messages dans MongoDB [ ] Jupiter
 
 ## Replicaset
 * Utiliser le ReplicaSet pour permettre une meilleure tolérance aux pannes.
