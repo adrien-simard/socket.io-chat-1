@@ -237,3 +237,13 @@ mongoose.connect(connStr, function (err) {
 http.listen(8001, function () {
   console.log('Server is listening on *:8001');
 });
+
+// Quelques rêquêtes pertinentes 
+
+function getAllMessages(){
+  // avoir tout les messages 
+  Message.find({}).exec(function (err,res){
+    console.log(res);
+  })
+}
+// getAllMessages();
