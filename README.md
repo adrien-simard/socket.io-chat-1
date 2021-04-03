@@ -35,11 +35,10 @@ L'application est désormais accesssible à l'url **http://localhost:8001/**.
 
 # Rajout de fonctionalité
 ## Utilisateurs et stockage des messages
-* Connaître quels sont les utilisateurs connectés et les afficher (en utilisant Redis) [ ] Jupiter
-* Stocker l'ensemble des messages dans MongoDB [ ] Jupiter
-
+* Connaître quels sont les utilisateurs connectés et les afficher (en utilisant Redis) :white_check_mark:
+* Stocker l'ensemble des messages dans MongoDB :white_check_mark:
 ## Replicaset
-* Utiliser le ReplicaSet pour permettre une meilleure tolérance aux pannes.
+* Utiliser le ReplicaSet pour permettre une meilleure tolérance aux pannes.:white_check_mark:
 
 Nous allons créer 1 serveur primary et deux serveurs secondary qui vont permettrent la replication des données.
 Pour ce faire on créer 3 dossiers R0S1, R0S2 , R0S3 dans le repertoire data.
