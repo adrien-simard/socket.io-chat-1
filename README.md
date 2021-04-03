@@ -1,11 +1,5 @@
 # Socket.io : Chat
 
-Cette application reprend les sources du tutoriel présent sur le blog [bini.io](http://blog.bini.io) :
-
-* [Partie 1](http://blog.bini.io/developper-une-application-avec-socket-io/)
-* [Partie 2](http://blog.bini.io/developper-un-chat-avec-socket-io-partie-2/)
-* [Partie 3](http://blog.bini.io/developper-un-chat-avec-socket-io-partie-3/)
-
 Ce tutoriel est lui même une adaptation du [tutoriel officiel](http://socket.io/get-started/chat/) de socket.io.
 
 Cette version ajoute les fonctionnalités suivantes par rapport à la version du tutoriel officiel :
@@ -37,7 +31,7 @@ Pour démarrer l'application, exécutez la commande suivante depuis la racine du
 node server
 ```
 
-L'application est désormais accesssible à l'url **http://localhost:3000/**.
+L'application est désormais accesssible à l'url **http://localhost:8001/**.
 
 # Rajout de fonctionalité
 ## Utilisateurs et stockage des messages
@@ -45,8 +39,9 @@ L'application est désormais accesssible à l'url **http://localhost:3000/**.
 * Stocker l'ensemble des messages dans MongoDB done
 
 ## Replicaset
-* Utiliser le ReplicaSet pour permettre une meilleure tolérance aux pannes
-Nous allons créer 1 serveur primiry et deux serveurs secondary qui vont permettrent la replication des données.
+* Utiliser le ReplicaSet pour permettre une meilleure tolérance aux pannes.
+
+Nous allons créer 1 serveur primary et deux serveurs secondary qui vont permettrent la replication des données.
 Pour ce faire on créer 3 dossiers R0S1, R0S2 , R0S3 dans le repertoire data.
 Ensuite on effectue les commandes suivante pour lancer les replicaset sur différents port.
 
