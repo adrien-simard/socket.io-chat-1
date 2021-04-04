@@ -44,21 +44,21 @@ Nous allons créer 1 serveur primary et deux serveurs secondary qui vont permett
 Pour ce faire on créer 3 dossiers R0S1, R0S2 , R0S3 dans le repertoire data.
 Ensuite on effectue les commandes suivante pour lancer les replicaset sur différents port.
 
-`< mongod --replSet rs0 --port 27018 --dbpath ./data/R0S1>`
+` mongod --replSet rs0 --port 27018 --dbpath ./data/R0S1`
 
-`<mongod --replSet rs0 --port 27019 --dbpath ./data/R0S2>`
+`mongod --replSet rs0 --port 27019 --dbpath ./data/R0S2`
 
-`<mongod --replSet rs0 --port 27020 --dbpath ./data/R0S3>`.
+`mongod --replSet rs0 --port 27020 --dbpath ./data/R0S3`.
 
-On se connecte ensuite au port `<27018>` qui est le serveur principale pour connecter les replicasets
+On se connecte ensuite au port `27018` qui est le serveur principale pour connecter les replicasets
 
-Ensuite on initialise le replicaset : rs.initiate()
-On ajoute les replicasets: rs.add(‘localhost :27020’).
+Ensuite on initialise le replicaset : `rs.initiate()`
+On ajoute les replicasets: `rs.add(‘localhost :27020’)`.
 
 Pour finir on créer un serveur arbitre qui va élire le serveur primary. On evite les temps de latences de l'élection
 
-mongod --replSet rs0 --port 3000 --dbpath ./data/arb
-il suffit d’exécuter la commande rs.addArb(‘localhost :3000’) dans le client mongo. Dès cet instant, l’arbitre élit le primary et les deux secondary.
+`mongod --replSet rs0 --port 3000 --dbpath ./data/arb`
+il suffit d’exécuter la commande `rs.addArb(‘localhost :3000’)` dans le client mongo. Dès cet instant, l’arbitre élit le primary et les deux secondary.
 
 ## Quelques Requêtes
 * Quelques requêtes basiques comme récuperer les messages, les messages de chaque utilisateurs, compter les messages de chaques utilisateurs...Elles sont visible dans le code  :white_check_mark:
