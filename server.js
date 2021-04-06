@@ -13,8 +13,12 @@ var usersConnected;
 // import de redis client
 const redis = require("redis");
 const client = redis.createClient();
+const clientmess = redis.createClient();
 var alert = require('alert');
 
+client.on("error", function(error) {
+  console.error(error);
+});
 client.on("error", function(error) {
   console.error(error);
 });
@@ -27,6 +31,8 @@ client.on("ready", function(error) {
  * Gestion des requêtes HTTP des utilisateurs en leur renvoyant les fichiers du dossier 'public'
  */
  app.use('/', express.static(__dirname + '/public'));
+
+ 
 
  /**
   * Liste des utilisateurs connectés
@@ -193,6 +199,9 @@ client.on("ready", function(error) {
       mess.save(function (err) {
        if (err) throw err;
    });
+   // ajout message ephémère dans REDIS
+   //temporaryStore(message.text)
+
 
      if (messages.length > 150) {
        messages.splice(0, 1);
@@ -247,3 +256,64 @@ function getAllMessages(){
   })
 }
 // getAllMessages();
+
+function getAllUserMessage(username) {
+	// Pour avoir le nombre de message total (toutes rooms confondues) d'un utilisateur
+	Message.find({utilisateur:username}).exec(function(err,res) {
+		console.log(res);
+	})
+}
+//getAllUserMessage("adrien");
+
+function getAllUserMessageNum(username) {
+	// Pour avoir le nombre de message total (toutes rooms confondues) d'un utilisateur
+	Message.find({utilisateur:username}).count().exec(function(err,res) {
+    console.log("nb de messages :")
+		console.log(res);
+	})
+}
+//getAllUserMessageNum("adrien");
+
+
+function getBonjour(){
+  Message.find({content:"bonjour"}).exec(function (err,res){
+    console.log(res);
+  })
+}
+// getBonjour();
+
+function temporaryStore(message){
+  /** cette methode stocke temprairement les messages dans redis (10 min) cela pourrait être utile pour faire des messageries temporaires */ 
+  clientmess.rpush(['messa', message], function(err, reply) {   
+    // REDIS - Ajout de l'user à la db
+   if (err) throw err;
+   console.log(reply); // On s'assure que l'ajout s'est bien fait
+   
+  });
+  clientmess.expire('messa', 1200)
+   
+}
+function ShowtemporaryMessage(){
+  clientmess.lrange("messa",0,-1, function(err,reply) { // on remet à jour la variable users avec les données de redis
+    if (err) throw err;
+  users=reply;
+  //affichage de la liste des users
+  console.log(users)
+  });
+}
+
+//Pouvoir afficher une conversation précédente (10 derniers messages)
+function ShowChat(){
+  Message.find({}).sort({date: -1}).limit(10).exec(function(err,res) {
+    console.log(res);
+    })
+}
+ShowChat()
+
+function getUsersActivity() {
+	// Pour l'utilisateur le plus actif
+	Message.aggregate([{$group:{_id:{username:"$username"},"nbOfMessage":{$sum:1}}}]).exec(function(err,res) {
+	console.log(res);
+	})
+}
+//getUsersActivity();
