@@ -64,4 +64,9 @@ il suffit d’exécuter la commande `rs.addArb(‘localhost :3000’)` dans le c
 * Quelques requêtes basiques comme récuperer les messages, les messages de chaque utilisateurs, compter les messages de chaques utilisateurs...Elles sont visible dans le code  :white_check_mark:
 * Pouvoir afficher une conversation précédente entre deux utilisateurs
 * Sortir des requêtes pertinentes : utilisateur le plus sollicité, celui qui communique le plus, etc.
+* Mode de stockage des messages ephémère avec le stockage des messages dans REDIS avec un Timeout. 
+![image](https://user-images.githubusercontent.com/49042749/113752868-bf03d300-970d-11eb-8276-39e85b620cac.png)
+![image](https://user-images.githubusercontent.com/49042749/113753075-f96d7000-970d-11eb-9112-288de4b27979.png)
+
+
 
