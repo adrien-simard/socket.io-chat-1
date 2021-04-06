@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
     
 
 var UserSchema = new Schema({
-    username: {type: String, lowercase: true, required: [true, "can't be blank"], match: [/^[a-zA-Z0-9]+$/, 'is invalid'], index: true},
+    username: {type: String, lowercase: true, index: true},
    
 });
 
