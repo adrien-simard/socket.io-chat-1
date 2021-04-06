@@ -34,6 +34,7 @@ node server
 L'application est désormais accesssible à l'url **http://localhost:8001/**.
 
 # Rajout des fonctionalités
+### Fait en Pair Programming avec Alexandre Morel.
 ## Utilisateurs et stockage des messages
 * Connaître quels sont les utilisateurs connectés et les afficher (en utilisant Redis) :white_check_mark:
 * Stocker l'ensemble des messages dans MongoDB :white_check_mark:
