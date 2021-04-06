@@ -1,4 +1,4 @@
-# Socket.io : Chat
+# Socket.io : Chat (Pair programming avec Alexandre Morel)
 
 Ce tutoriel est lui même une adaptation du [tutoriel officiel](http://socket.io/get-started/chat/) de socket.io.
 
